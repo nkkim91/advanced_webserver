@@ -206,7 +206,7 @@ void loop ( void ) {
 
 void drawGraph() {
 	String out = "";
-	char temp[100];
+	char temp[200];
 	out += "<svg xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\" width=\"640\" height=\"480\">\n";
  	out += "<rect width=\"640\" height=\"480\" fill=\"rgb(250, 230, 210)\" stroke-width=\"1\" stroke=\"rgb(0, 0, 0)\" />\n";
  	out += "<g stroke=\"black\">\n";
@@ -217,7 +217,7 @@ void drawGraph() {
   }
   
   Serial.println("-------------------------------------------------------------");
- 	for (int k = nTemperatureIdx, y = (int)fTemperature[k], x = 10, j = 0, l = 0; x < NUM_SVG_TEMP_POINTS * SVG_X_INTERVAL ; x+= SVG_X_INTERVAL) {
+  for (int k = nTemperatureIdx, y = (int)fTemperature[k], x = 10, i = 0; x < NUM_SVG_TEMP_POINTS * SVG_X_INTERVAL ; x+= SVG_X_INTERVAL) {
     if( k == NUM_SVG_TEMP_POINTS - 1 )
       k = 0;
     else 
@@ -228,6 +228,12 @@ void drawGraph() {
 
     tmp_y = ((y*10 - SVG_DRAW_TEMP_MIN*10) * (SVG_DRAW_MAX_Y / SVG_DRAW_TEMP_NUM_OF_UNIT)) / (((SVG_DRAW_TEMP_MAX - SVG_DRAW_TEMP_MIN) / (SVG_DRAW_TEMP_NUM_OF_UNIT-1)) * 10);
     tmp_y2 = ((y2*10 - SVG_DRAW_TEMP_MIN*10) * (SVG_DRAW_MAX_Y / SVG_DRAW_TEMP_NUM_OF_UNIT)) / (((SVG_DRAW_TEMP_MAX - SVG_DRAW_TEMP_MIN) / (SVG_DRAW_TEMP_NUM_OF_UNIT-1)) * 10);
+
+    if( !(i++ % 10) ) { // print temperature in number once every 5
+      sprintf(temp, "<text x=\"%d\" y=\"%d\" fill=\"red\"> %d </text>\n", x, 480 - tmp_y, y);
+      out += temp;
+    }
+
     sprintf(temp, "<line x1=\"%d\" y1=\"%d\" x2=\"%d\" y2=\"%d\" stroke-width=\"1\" />\n", x, 480 - tmp_y, x + SVG_X_INTERVAL, 480 - tmp_y2);
 #ifdef DEBUG_NK
     Serial.print("k, y, y2 : "); Serial.print(k); Serial.print(", "); Serial.print(y); Serial.print(", "); Serial.println(y2);
